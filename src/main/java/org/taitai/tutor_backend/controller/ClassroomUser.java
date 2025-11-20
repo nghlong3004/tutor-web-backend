@@ -10,16 +10,14 @@ import org.taitai.tutor_backend.service.ClassesService;
 
 import java.util.List;
 
-;
-
 @RestController
-@RequestMapping("/class")
+@RequestMapping("api/v1/class")
 @RequiredArgsConstructor
 public class ClassroomUser {
     private final ClassesService classesService;
 
     @PostMapping
-    @RequestMapping("/hiringstutor")
+    @RequestMapping("/hiring")
     public ResponseEntity<String> hiringstutor(@RequestBody ClassesRequest classesRequest) {
         return classesService.hiringsTutor(classesRequest);
     }
