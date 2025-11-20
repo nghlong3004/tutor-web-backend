@@ -2,7 +2,6 @@ package org.taitai.tutor_backend.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,11 @@ import org.taitai.tutor_backend.repository.TutorRepo;
 import org.taitai.tutor_backend.repository.UserRepo;
 import org.taitai.tutor_backend.request.ClassesRequest;
 import org.taitai.tutor_backend.respone.ApplyTutorRespone;
+import org.taitai.tutor_backend.respone.ClassesRespone;
 import org.taitai.tutor_backend.service.ClassesService;
 import org.taitai.tutor_backend.type.ApplyStatus;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class ClassesServiceImpl implements ClassesService {
     private final TutorRepo tutorRepo;
 
     @Override
-    public ResponseEntity<String> hiringsTutor(ClassesRequest classesRequest) {
+    public ClassesRespone hiringsTutor(ClassesRequest classesRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepo.findByUsername(username).orElseThrow(
@@ -43,8 +42,10 @@ public class ClassesServiceImpl implements ClassesService {
         classes.setUser(user);
         classes.setStatus(String.valueOf(ApplyStatus.OPEN));
         classesRepo.save(classes);
-        return ResponseEntity.status(HttpStatus.OK)
-                             .body(Map.of("message", "Bạn đã đăng ký tạo lớp thành công rồi!").toString());
+        return ClassesRespone.builder()
+                             .username(username)
+                             .description(classesRequest.getDescription())
+                             .build();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ClassesServiceImpl implements ClassesService {
     }
 
     @Override
-    public ResponseEntity<ApplyTutorRespone> applyClass(Long classId) {
+    public ApplyTutorRespone applyClass(Long classId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Classes classes = classesRepo.findById(classId).orElseThrow(
@@ -67,11 +68,11 @@ public class ClassesServiceImpl implements ClassesService {
         tutorApply.setTutor(tutor);
         tutorApply.setStatus(ApplyStatus.PENDING);
         tutorApplyRepo.save(tutorApply);
-        return ResponseEntity.ok(ApplyTutorRespone.builder()
-                                                  .tutorId(tutor.getId())
-                                                  .classId(classes.getId())
-                                                  .status(ApplyStatus.PENDING)
-                                                  .build());
+        return ApplyTutorRespone.builder()
+                                .tutorId(tutor.getId())
+                                .classId(classes.getId())
+                                .status(ApplyStatus.PENDING)
+                                .build();
     }
 
 }
