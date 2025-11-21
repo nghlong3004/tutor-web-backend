@@ -16,9 +16,9 @@ import org.taitai.tutor_backend.repository.UserRepo;
 import org.taitai.tutor_backend.request.RefreshTokenRequest;
 import org.taitai.tutor_backend.request.UserLoginRequest;
 import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.respone.TokenRespone;
-import org.taitai.tutor_backend.service.JwtService;
+import org.taitai.tutor_backend.response.TokenResponse;
 import org.taitai.tutor_backend.service.AuthService;
+import org.taitai.tutor_backend.service.JwtService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -38,17 +38,17 @@ public class AuthSeviceImp implements AuthService {
 
 
     @Override
-    public TokenRespone login(UserLoginRequest loginRequest) {
+    public TokenResponse login(UserLoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         var user = userRepo.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Invalid email or password")) ;
         String accessToken = jwtService.generateAccessToken(user, ACCESS_TOKEN);
         String refreshToken = jwtService.generateRefreshToken(user, REFRESH_TOKEN);
 
-        TokenRespone tokenRespone =  TokenRespone.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .userId(user.getId())
-                .build();
+        TokenResponse tokenResponse =  TokenResponse.builder()
+                                                    .accessToken(accessToken)
+                                                    .refreshToken(refreshToken)
+                                                    .userId(user.getId())
+                                                    .build();
         RefreshToken r = new RefreshToken();
         r.setToken(refreshToken);
         r.setUser(user);
@@ -56,11 +56,11 @@ public class AuthSeviceImp implements AuthService {
         r.setExpiryDate(Instant.now().plus(30, ChronoUnit.DAYS));
         log.info("[53] check round {}", r.getUser().getId());
         refreshTokenRepo.save(r);
-        return tokenRespone;
+        return tokenResponse;
     }
 
     @Override
-    public TokenRespone signup(UserSignUpRequest signUpRequest) {
+    public TokenResponse signup(UserSignUpRequest signUpRequest) {
         if (userRepo.findByUsername(signUpRequest.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -71,18 +71,18 @@ public class AuthSeviceImp implements AuthService {
         log.info("getUsername {}", signUpRequest.getUsername());
         String accessToken = jwtService.generateAccessToken(user, ACCESS_TOKEN);
         String refreshToken = jwtService.generateRefreshToken(user, REFRESH_TOKEN);
-        TokenRespone tokenRespone = TokenRespone.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .userId(user.getId())
-                .build();
+        TokenResponse tokenResponse = TokenResponse.builder()
+                                                   .accessToken(accessToken)
+                                                   .refreshToken(refreshToken)
+                                                   .userId(user.getId())
+                                                   .build();
         RefreshToken r = new RefreshToken();
         r.setToken(refreshToken);
         r.setUser(user);
         r.setRevoked(false);
         r.setExpiryDate(Instant.now().plus(30, ChronoUnit.DAYS));
         refreshTokenRepo.save(r);
-        return tokenRespone;
+        return tokenResponse;
     }
 
     @Override

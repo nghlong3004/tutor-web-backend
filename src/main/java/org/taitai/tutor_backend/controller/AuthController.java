@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.taitai.tutor_backend.request.RefreshTokenRequest;
 import org.taitai.tutor_backend.request.UserLoginRequest;
 import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.respone.RefreshTokenRespone;
-import org.taitai.tutor_backend.respone.TokenRespone;
-import org.taitai.tutor_backend.service.RefreshTokenService;
+import org.taitai.tutor_backend.response.RefreshTokenResponse;
+import org.taitai.tutor_backend.response.TokenResponse;
 import org.taitai.tutor_backend.service.AuthService;
+import org.taitai.tutor_backend.service.RefreshTokenService;
 
 
 @RestController
@@ -29,13 +29,13 @@ public class AuthController {
 
     @PostMapping
     @RequestMapping("/signup")
-    public TokenRespone signup(@RequestBody UserSignUpRequest signUpRequest) {
+    public TokenResponse signup(@RequestBody UserSignUpRequest signUpRequest) {
         log.info("Signup controller called for username: {}", signUpRequest.getUsername());
         return userService.signup(signUpRequest);
     }
     @PostMapping
     @RequestMapping("/login")
-    public TokenRespone login(@RequestBody UserLoginRequest loginRequest) {
+    public TokenResponse login(@RequestBody UserLoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
     // đang hoàn thành ( chưa xong logout )
@@ -45,7 +45,7 @@ public class AuthController {
         return userService.logout(refreshToken);
     }
     @PostMapping("/refresh")
-    public RefreshTokenRespone refresh(HttpServletRequest token) {
+    public RefreshTokenResponse refresh(HttpServletRequest token) {
         log.info(">>> [Controller] Refresh endpoint called with: " + token.getHeader("Authorization"));
         return refreshTokenService.creatAccessTokenByRefreshToken(token) ;
     }

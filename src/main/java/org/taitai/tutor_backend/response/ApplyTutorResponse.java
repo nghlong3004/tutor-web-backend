@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.respone;
+package org.taitai.tutor_backend.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import org.taitai.tutor_backend.type.ApplyStatus;
 @Getter
 @Setter
 @Builder
-public class ApplyTutorRespone {
+public class ApplyTutorResponse {
     private Long tutorId;
     private Long classId;
     private ApplyStatus status;

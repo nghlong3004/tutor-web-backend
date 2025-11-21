@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.respone;
+package org.taitai.tutor_backend.response;
 
 
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class TokenRespone {
+public class TokenResponse {
     private String accessToken;
     private String refreshToken;
     private Long userId;

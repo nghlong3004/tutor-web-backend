@@ -5,13 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.taitai.tutor_backend.request.RefreshTokenRequest;
 import org.taitai.tutor_backend.request.UserLoginRequest;
 import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.respone.TokenRespone;
+import org.taitai.tutor_backend.response.TokenResponse;
 
 
 public interface AuthService {
 
-    TokenRespone login(UserLoginRequest loginRequest);
-    TokenRespone signup(UserSignUpRequest signUpRequest);
+    TokenResponse login(UserLoginRequest loginRequest);
+    TokenResponse signup(UserSignUpRequest signUpRequest);
     ResponseEntity<String> logout(RefreshTokenRequest refreshToken);
 
 

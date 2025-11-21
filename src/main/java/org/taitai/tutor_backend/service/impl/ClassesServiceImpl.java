@@ -15,8 +15,8 @@ import org.taitai.tutor_backend.repository.TutorApplyRepo;
 import org.taitai.tutor_backend.repository.TutorRepo;
 import org.taitai.tutor_backend.repository.UserRepo;
 import org.taitai.tutor_backend.request.ClassesRequest;
-import org.taitai.tutor_backend.respone.ApplyTutorRespone;
-import org.taitai.tutor_backend.respone.ClassesRespone;
+import org.taitai.tutor_backend.response.ApplyTutorResponse;
+import org.taitai.tutor_backend.response.ClassesResponse;
 import org.taitai.tutor_backend.service.ClassesService;
 import org.taitai.tutor_backend.type.ApplyStatus;
 
@@ -33,7 +33,7 @@ public class ClassesServiceImpl implements ClassesService {
     private final TutorRepo tutorRepo;
 
     @Override
-    public ClassesRespone hiringsTutor(ClassesRequest classesRequest) {
+    public ClassesResponse hiringsTutor(ClassesRequest classesRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepo.findByUsername(username).orElseThrow(
@@ -44,10 +44,10 @@ public class ClassesServiceImpl implements ClassesService {
         classes.setUser(user);
         classes.setStatus(OPEN);
         classesRepo.save(classes);
-        return ClassesRespone.builder()
-                             .username(username)
-                             .description(classesRequest.getDescription())
-                             .build();
+        return ClassesResponse.builder()
+                              .username(username)
+                              .description(classesRequest.getDescription())
+                              .build();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class ClassesServiceImpl implements ClassesService {
     }
 
     @Override
-    public ApplyTutorRespone applyClass(Long classId) {
+    public ApplyTutorResponse applyClass(Long classId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         Classes classes = classesRepo.findById(classId).orElseThrow(
@@ -65,16 +65,18 @@ public class ClassesServiceImpl implements ClassesService {
                 () -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Username not found"));
         Tutor tutor = tutorRepo.findByUser(user).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Tutor not found"));
+        if(tutorApplyRepo.findByTutorAndClasses(tutor, classes).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Tutor already exists");
+        }
         TutorApply tutorApply = new TutorApply();
         tutorApply.setClasses(classes);
         tutorApply.setTutor(tutor);
         tutorApply.setStatus(ApplyStatus.PENDING);
         tutorApplyRepo.save(tutorApply);
-        return ApplyTutorRespone.builder()
-                                .tutorId(tutor.getId())
-                                .classId(classes.getId())
-                                .status(ApplyStatus.PENDING)
-                                .build();
+        return ApplyTutorResponse.builder()
+                                 .tutorId(tutor.getId())
+                                 .classId(classes.getId())
+                                 .status(ApplyStatus.PENDING)
+                                 .build();
     }
-
 }

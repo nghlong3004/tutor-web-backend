@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.taitai.tutor_backend.model.Classes;
 import org.taitai.tutor_backend.request.ClassesRequest;
-import org.taitai.tutor_backend.respone.ApplyTutorRespone;
-import org.taitai.tutor_backend.respone.ClassesRespone;
+import org.taitai.tutor_backend.response.ApplyTutorResponse;
+import org.taitai.tutor_backend.response.ClassesResponse;
 import org.taitai.tutor_backend.service.ClassesService;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class ClassroomUser {
 
     @PostMapping
     @RequestMapping("/hiring")
-    public ClassesRespone hiringstutor(@RequestBody ClassesRequest classesRequest) {
+    public ClassesResponse hiringstutor(@RequestBody ClassesRequest classesRequest) {
         return classesService.hiringsTutor(classesRequest);
     }
 
@@ -28,7 +28,7 @@ public class ClassroomUser {
     }
 
     @PostMapping("/{id}/apply")
-    public ApplyTutorRespone applyClasses(@PathVariable Long id) {
+    public ApplyTutorResponse applyClasses(@PathVariable Long id) {
         return classesService.applyClass(id);
     }
 
