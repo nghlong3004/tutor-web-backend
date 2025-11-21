@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import org.taitai.tutor_backend.type.ApplyStatus;
 
 @Entity
 @Table
@@ -24,8 +24,9 @@ public class Classes {
     private String description;
     @Getter
     @Setter
-    @Column(name= "status", columnDefinition ="VARCHAR(100)")
-    private String status;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "status")
+    private ApplyStatus status;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore

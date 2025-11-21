@@ -36,9 +36,9 @@ public class TutorServiceImpl implements TutorService {
         if (tutorRepo.findTutorByEmail(tutorRequest.getEmail()).isPresent())
             throw new RuntimeException("Email already exists");
         Tutor tutor = new Tutor();
+        tutor.setUser(user);
         tutor.setEmail(tutorRequest.getEmail());
         tutor.setSubject(tutorRequest.getSubject());
-        tutor.setUser(user);
         tutorRepo.save(tutor);
         return ResponseEntity.ok().body(tutor.getEmail());
     }

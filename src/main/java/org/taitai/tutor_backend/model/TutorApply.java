@@ -9,7 +9,7 @@ import org.taitai.tutor_backend.type.ApplyStatus;
 public class TutorApply {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     private Long id;
 

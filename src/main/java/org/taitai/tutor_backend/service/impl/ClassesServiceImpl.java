@@ -22,6 +22,8 @@ import org.taitai.tutor_backend.type.ApplyStatus;
 
 import java.util.List;
 
+import static org.taitai.tutor_backend.type.ApplyStatus.OPEN;
+
 @Service
 @RequiredArgsConstructor
 public class ClassesServiceImpl implements ClassesService {
@@ -40,7 +42,7 @@ public class ClassesServiceImpl implements ClassesService {
         classes.setUsername(classesRequest.getUsername());
         classes.setDescription(classesRequest.getDescription());
         classes.setUser(user);
-        classes.setStatus(String.valueOf(ApplyStatus.OPEN));
+        classes.setStatus(OPEN);
         classesRepo.save(classes);
         return ClassesRespone.builder()
                              .username(username)
@@ -50,7 +52,7 @@ public class ClassesServiceImpl implements ClassesService {
 
     @Override
     public List<Classes> getClasses() {
-        return classesRepo.findByStatus(String.valueOf(ApplyStatus.OPEN));
+        return classesRepo.findByStatus(OPEN);
     }
 
     @Override
