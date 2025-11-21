@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.taitai.tutor_backend.repository.UserRepo;
 import org.taitai.tutor_backend.request.UpdateProfileUserRequest;
-import org.taitai.tutor_backend.respone.UserRespone;
+import org.taitai.tutor_backend.response.UserResponse;
 import org.taitai.tutor_backend.service.UserService;
 
 
@@ -19,21 +19,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
 
     @Override
-    public ResponseEntity<UserRespone> proFile() {
+    public ResponseEntity<UserResponse> proFile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         String username = authentication.getName();
         var user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-        UserRespone userRespone = UserRespone.builder()
-                .username(user.getUsername())
-                .build();
-        return ResponseEntity.ok(userRespone);
+        UserResponse userResponse = UserResponse.builder()
+                                                .username(user.getUsername())
+                                                .build();
+        return ResponseEntity.ok(userResponse);
     }
 
     @Override
-    public UserRespone updateProfile(UpdateProfileUserRequest updateProfileUserRequest) {
+    public UserResponse updateProfile(UpdateProfileUserRequest updateProfileUserRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("Authentication required");
@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService {
 
         userRepo.save(user);
 
-        return UserRespone.builder()
-                .username(user.getUsername())
-                .build();
+        return UserResponse.builder()
+                           .username(user.getUsername())
+                           .build();
     }
 }

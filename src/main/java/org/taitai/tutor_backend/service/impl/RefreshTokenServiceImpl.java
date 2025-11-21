@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.taitai.tutor_backend.model.RefreshToken;
 import org.taitai.tutor_backend.repository.RefreshTokenRepo;
-import org.taitai.tutor_backend.respone.RefreshTokenRespone;
+import org.taitai.tutor_backend.response.RefreshTokenResponse;
 import org.taitai.tutor_backend.service.JwtService;
 import org.taitai.tutor_backend.service.RefreshTokenService;
 import org.taitai.tutor_backend.type.TokenType;
-
 
 import java.time.Instant;
 
@@ -21,7 +20,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepo refreshTokenRepo;
     private final JwtService jwtService;
     @Override
-    public RefreshTokenRespone creatAccessTokenByRefreshToken(HttpServletRequest token) {
+    public RefreshTokenResponse creatAccessTokenByRefreshToken(HttpServletRequest token) {
 
         String refreshToken = token.getHeader("Authorization").substring(7);
         if (refreshToken.isBlank()) {
@@ -40,8 +39,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         }
         String accessToken = jwtService.generateAccessToken(ref.getUser() , TokenType.ACCESS_TOKEN);
         log.info(">>> [Service] Access Token: " + accessToken);
-        return RefreshTokenRespone.builder()
-                .accessToken(accessToken)
-                .build();
+        return RefreshTokenResponse.builder()
+                                   .accessToken(accessToken)
+                                   .build();
     }
 }
