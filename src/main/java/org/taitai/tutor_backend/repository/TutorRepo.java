@@ -8,8 +8,9 @@ import org.taitai.tutor_backend.model.User;
 import java.util.Optional;
 
 @Repository
-public interface TutorRepo extends JpaRepository<Tutor, String> {
+public interface TutorRepo extends JpaRepository<Tutor, Long> {
     Optional<Tutor> findTutorByEmail(String email);
 
     Optional<Tutor> findByUser(User user);
+    Optional<Tutor> findById(Long id);
 }
