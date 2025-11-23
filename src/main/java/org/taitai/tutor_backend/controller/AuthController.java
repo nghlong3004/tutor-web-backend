@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.taitai.tutor_backend.request.RefreshTokenRequest;
-import org.taitai.tutor_backend.request.UserLoginRequest;
-import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.response.RefreshTokenResponse;
-import org.taitai.tutor_backend.response.TokenResponse;
+import org.taitai.tutor_backend.model.dto.request.RefreshTokenRequest;
+import org.taitai.tutor_backend.model.dto.request.UserLoginRequest;
+import org.taitai.tutor_backend.model.dto.request.UserSignUpRequest;
+import org.taitai.tutor_backend.model.dto.response.RefreshTokenResponse;
+import org.taitai.tutor_backend.model.dto.response.TokenResponse;
 import org.taitai.tutor_backend.service.AuthService;
 import org.taitai.tutor_backend.service.RefreshTokenService;
 

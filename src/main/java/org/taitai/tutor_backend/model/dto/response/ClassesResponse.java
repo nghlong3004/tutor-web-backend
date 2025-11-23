@@ -1,11 +1,13 @@
-package org.taitai.tutor_backend.request;
+package org.taitai.tutor_backend.model.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ClassesRequest {
+@Builder
+public class ClassesResponse {
     private String username;
     private String description;
 }

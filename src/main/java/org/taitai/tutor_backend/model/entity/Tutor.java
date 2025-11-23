@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.model;
+package org.taitai.tutor_backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

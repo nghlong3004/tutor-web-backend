@@ -4,8 +4,8 @@ package org.taitai.tutor_backend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.taitai.tutor_backend.request.UpdateProfileUserRequest;
-import org.taitai.tutor_backend.response.UserResponse;
+import org.taitai.tutor_backend.model.dto.request.UpdateProfileUserRequest;
+import org.taitai.tutor_backend.model.dto.response.UserResponse;
 import org.taitai.tutor_backend.service.UserService;
 
 @RestController

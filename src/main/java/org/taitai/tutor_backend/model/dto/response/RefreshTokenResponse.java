@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.response;
+package org.taitai.tutor_backend.model.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

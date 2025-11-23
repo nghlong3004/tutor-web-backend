@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.model;
+package org.taitai.tutor_backend.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

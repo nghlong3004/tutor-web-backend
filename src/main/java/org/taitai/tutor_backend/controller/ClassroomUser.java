@@ -2,10 +2,10 @@ package org.taitai.tutor_backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.taitai.tutor_backend.model.Classes;
-import org.taitai.tutor_backend.request.ClassesRequest;
-import org.taitai.tutor_backend.response.ApplyTutorResponse;
-import org.taitai.tutor_backend.response.ClassesResponse;
+import org.taitai.tutor_backend.model.entity.Classes;
+import org.taitai.tutor_backend.model.dto.request.ClassesRequest;
+import org.taitai.tutor_backend.model.dto.response.ApplyTutorResponse;
+import org.taitai.tutor_backend.model.dto.response.ClassesResponse;
 import org.taitai.tutor_backend.service.ClassesService;
 
 import java.util.List;

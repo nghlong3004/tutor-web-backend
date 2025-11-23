@@ -9,14 +9,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.taitai.tutor_backend.model.RefreshToken;
-import org.taitai.tutor_backend.model.User;
+import org.taitai.tutor_backend.model.entity.RefreshToken;
+import org.taitai.tutor_backend.model.entity.User;
 import org.taitai.tutor_backend.repository.RefreshTokenRepo;
 import org.taitai.tutor_backend.repository.UserRepo;
-import org.taitai.tutor_backend.request.RefreshTokenRequest;
-import org.taitai.tutor_backend.request.UserLoginRequest;
-import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.response.TokenResponse;
+import org.taitai.tutor_backend.model.dto.request.RefreshTokenRequest;
+import org.taitai.tutor_backend.model.dto.request.UserLoginRequest;
+import org.taitai.tutor_backend.model.dto.request.UserSignUpRequest;
+import org.taitai.tutor_backend.model.dto.response.TokenResponse;
 import org.taitai.tutor_backend.service.AuthService;
 import org.taitai.tutor_backend.service.JwtService;
 

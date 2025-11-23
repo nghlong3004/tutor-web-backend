@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.taitai.tutor_backend.repository.UserRepo;
-import org.taitai.tutor_backend.request.UpdateProfileUserRequest;
-import org.taitai.tutor_backend.response.UserResponse;
+import org.taitai.tutor_backend.model.dto.request.UpdateProfileUserRequest;
+import org.taitai.tutor_backend.model.dto.response.UserResponse;
 import org.taitai.tutor_backend.service.UserService;
 
 
