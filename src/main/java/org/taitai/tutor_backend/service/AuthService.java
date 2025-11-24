@@ -2,10 +2,10 @@ package org.taitai.tutor_backend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.taitai.tutor_backend.request.RefreshTokenRequest;
-import org.taitai.tutor_backend.request.UserLoginRequest;
-import org.taitai.tutor_backend.request.UserSignUpRequest;
-import org.taitai.tutor_backend.response.TokenResponse;
+import org.taitai.tutor_backend.model.dto.request.RefreshTokenRequest;
+import org.taitai.tutor_backend.model.dto.request.UserLoginRequest;
+import org.taitai.tutor_backend.model.dto.request.UserSignUpRequest;
+import org.taitai.tutor_backend.model.dto.response.TokenResponse;
 
 
 public interface AuthService {

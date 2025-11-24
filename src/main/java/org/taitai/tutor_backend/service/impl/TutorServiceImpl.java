@@ -9,14 +9,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.taitai.tutor_backend.model.Tutor;
-import org.taitai.tutor_backend.model.TutorApply;
-import org.taitai.tutor_backend.model.User;
+import org.taitai.tutor_backend.model.dto.request.TutorSignUpRequest;
+import org.taitai.tutor_backend.model.dto.request.UpdateProfileTutorRequest;
+import org.taitai.tutor_backend.model.dto.response.TutorAssignmentResponse;
+import org.taitai.tutor_backend.model.dto.response.TutorProfileResponse;
+import org.taitai.tutor_backend.model.entity.Tutor;
+import org.taitai.tutor_backend.model.entity.TutorApply;
+import org.taitai.tutor_backend.model.entity.User;
 import org.taitai.tutor_backend.repository.TutorApplyRepo;
 import org.taitai.tutor_backend.repository.TutorRepo;
 import org.taitai.tutor_backend.repository.UserRepo;
-import org.taitai.tutor_backend.request.TutorSignUpRequest;
-import org.taitai.tutor_backend.response.TutorAssignmentResponse;
 import org.taitai.tutor_backend.service.TutorService;
 
 import java.util.Collections;
@@ -74,5 +76,44 @@ public class TutorServiceImpl implements TutorService {
                                   .description(apply.getClasses().getDescription())
                                   .build())
                            .toList();
+    }
+
+    @Override
+    public TutorProfileResponse getProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        if (user.getTutor() == null) {
+            throw new RuntimeException("Tutor not found");
+        }
+        Tutor tutor = user.getTutor();
+        return TutorProfileResponse.builder()
+                                   .email(tutor.getEmail())
+                                   .subject(tutor.getSubject())
+                                   .build();
+    }
+
+    @Override
+    public TutorProfileResponse updateProfile(UpdateProfileTutorRequest updateProfileTutorRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        if (user.getTutor() == null) {
+            throw new RuntimeException("Tutor not found");
+        }
+        Tutor tutor = user.getTutor();
+        if(tutorRepo.existsByEmail(updateProfileTutorRequest.getEmail()))
+            throw new RuntimeException("Email exist!!!!!");
+        if (updateProfileTutorRequest.getEmail() != null) {
+            tutor.setEmail(updateProfileTutorRequest.getEmail());
+        }
+        if (updateProfileTutorRequest.getSubject() != null) {
+            tutor.setSubject(updateProfileTutorRequest.getSubject());
+        }
+        tutorRepo.save(tutor);
+        return TutorProfileResponse.builder()
+                                   .email(tutor.getEmail())
+                                   .subject(tutor.getSubject())
+                                   .build();
     }
 }

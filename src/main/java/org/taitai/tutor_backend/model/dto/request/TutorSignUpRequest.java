@@ -1,4 +1,4 @@
-package org.taitai.tutor_backend.request;
+package org.taitai.tutor_backend.model.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
