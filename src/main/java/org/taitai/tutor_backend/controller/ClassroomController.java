@@ -2,10 +2,10 @@ package org.taitai.tutor_backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.taitai.tutor_backend.model.entity.Classes;
 import org.taitai.tutor_backend.model.dto.request.ClassesRequest;
 import org.taitai.tutor_backend.model.dto.response.ApplyTutorResponse;
 import org.taitai.tutor_backend.model.dto.response.ClassesResponse;
+import org.taitai.tutor_backend.model.entity.Classes;
 import org.taitai.tutor_backend.service.ClassesService;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/class")
 @RequiredArgsConstructor
-public class ClassroomUser {
+public class ClassroomController {
     private final ClassesService classesService;
 
     @PostMapping

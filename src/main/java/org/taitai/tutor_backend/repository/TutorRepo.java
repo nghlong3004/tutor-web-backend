@@ -13,4 +13,5 @@ public interface TutorRepo extends JpaRepository<Tutor, Long> {
 
     Optional<Tutor> findByUser(User user);
     Optional<Tutor> findById(Long id);
+    boolean existsByEmail(String email);
 }

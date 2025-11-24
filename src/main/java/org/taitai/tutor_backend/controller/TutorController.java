@@ -29,7 +29,7 @@ public class TutorController {
     public TutorProfileResponse getMe() {
         return tutorService.getProfile();
     }
-    @PostMapping("/updateProfile")
+    @PatchMapping("/updateProfile")
     public TutorProfileResponse updateProfile(@RequestBody UpdateProfileTutorRequest updateProfileTutorRequest) {
         return tutorService.updateProfile(updateProfileTutorRequest);
     }

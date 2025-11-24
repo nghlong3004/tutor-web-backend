@@ -102,6 +102,8 @@ public class TutorServiceImpl implements TutorService {
             throw new RuntimeException("Tutor not found");
         }
         Tutor tutor = user.getTutor();
+        if(tutorRepo.existsByEmail(updateProfileTutorRequest.getEmail()))
+            throw new RuntimeException("Email exist!!!!!");
         if (updateProfileTutorRequest.getEmail() != null) {
             tutor.setEmail(updateProfileTutorRequest.getEmail());
         }
