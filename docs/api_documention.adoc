@@ -1,0 +1,201 @@
+= Tutor System - API Specification
+:toc:
+:toclevels: 3
+:sectnums:
+:icons: font
+
+== 1. Quy ước chung (Conventions)
+
+* **Protocol**: HTTP/1.1
+* **Data Format**: JSON (`application/json`)
+* **Authentication**:
+  * Sử dụng **JWT (JSON Web Token)**.
+  * Mọi request tới các Private API bắt buộc phải kèm Header: `Authorization: Bearer <access_token>`.
+  * Khi Access Token hết hạn (401), Client cần dùng Refresh Token để lấy Access Token mới.
+
+== 2. Danh sách Mã lỗi (Business Codes)
+
+Bảng mã lỗi thống nhất để Frontend xử lý logic và hiển thị.
+
+[cols="1,2,3", options="header"]
+|===
+| Code | Meaning | HTTP Status
+
+| **SYS_001** | Internal Server Error | 500
+| **SYS_002** | Invalid Parameter (Validation Error) | 400
+
+| **AUTH_001** | Login Failed (Sai email/pass) | 401
+| **AUTH_002** | Access Token Invalid or Expired | 401
+| **AUTH_003** | Access Denied (Sai Role) | 403
+| **AUTH_004** | Refresh Token Invalid or Expired | 401
+
+| **USR_001** | Email already exists | 400
+| **USR_002** | User not found | 404
+| **USR_003** | User account is BANNED | 403
+
+| **TUT_001** | Tutor Profile not found | 404
+| **TUT_002** | Tutor Profile not approved | 400
+
+| **BK_001** | Booking conflict (Trùng giờ) | 409
+| **BK_002** | Booking not found | 404
+| **BK_003** | Invalid Booking Time (Start >= End) | 400
+|===
+
+== 3. Endpoints
+
+=== 3.1. Authentication Module
+Module này không yêu cầu Header Authorization (trừ Logout nếu cần).
+
+#### POST /api/auth/register
+Đăng ký thành viên thường (USER).
+[source,json]
+----
+{
+  "email": "student@test.com",
+  "password": "Password123",
+  "full_name": "Nguyen Van A"
+}
+----
+* **Possible Errors**:
+  * `400 Bad Request` - `SYS_002`: Thiếu trường, email sai định dạng, pass quá ngắn.
+  * `400 Bad Request` - `USR_001`: Email đã tồn tại.
+
+#### POST /api/auth/login
+Đăng nhập hệ thống.
+[source,json]
+----
+{
+  "access_token": "eyJhGci... (Short lived: 1h)",
+  "refresh_token": "8374ba... (Long lived: 7d)",
+  "token_type": "Bearer",
+  "role": "TUTOR",
+  "user_id": 10
+}
+----
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_001`: Sai email hoặc mật khẩu.
+  * `403 Forbidden` - `USR_003`: Tài khoản đã bị khóa (BANNED).
+
+#### POST /api/auth/refresh-token
+Lấy Access Token mới khi cái cũ hết hạn.
+[source,json]
+----
+{
+  "refresh_token": "8374ba..."
+}
+----
+
+[source, json]
+----
+{
+  "access_token": "new_access_token..."
+}
+----
+
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_004`: Refresh token hết hạn hoặc không hợp lệ (Client phải logout).
+
+=== 3.2. Public & User Module
+Dành cho Học viên.
+
+#### GET /api/tutors
+Tìm kiếm gia sư (Public API).
+* **Params**: `subject_id`, `min_price`, `max_price`, `keyword`.
+* **Possible Errors**:
+  * `400 Bad Request` - `SYS_002`: Sai format giá trị (ví dụ `min_price` là chữ).
+
+#### POST /api/bookings
+Đặt lịch học (Yêu cầu Login `USER`).
+[source,json]
+----
+{
+  "tutor_profile_id": 5,
+  "start_time": "2025-11-30T14:00:00",
+  "end_time": "2025-11-30T16:00:00",
+  "note": "Ôn thi đại học"
+}
+----
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Chưa đăng nhập hoặc Token hết hạn.
+  * `404 Not Found` - `TUT_001`: ID gia sư không tồn tại.
+  * `400 Bad Request` - `TUT_002`: Gia sư này đang bị khóa hoặc chưa được duyệt.
+  * `400 Bad Request` - `BK_003`: Thời gian bắt đầu lớn hơn thời gian kết thúc.
+  * `409 Conflict` - `BK_001`: Gia sư đã có lịch dạy vào giờ này.
+
+#### GET /api/my-bookings
+Xem lịch sử đặt lịch của tôi.
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Token hết hạn.
+
+=== 3.3. Tutor Module (Private)
+Dành cho Gia sư (Yêu cầu Role `TUTOR`).
+
+#### PUT /api/tutor/profile
+Cập nhật thông tin.
+[source,json]
+----
+{
+  "bio": "New bio...",
+  "hourly_rate": 250000
+}
+----
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Token hết hạn.
+  * `403 Forbidden` - `AUTH_003`: User thường cố gọi API này.
+  * `400 Bad Request` - `SYS_002`: Giá tiền âm hoặc dữ liệu sai.
+
+#### PUT /api/tutor/bookings/{id}/status
+Duyệt hoặc từ chối lịch hẹn.
+[source,json]
+----
+{
+  "status": "CONFIRMED"
+}
+----
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Token hết hạn.
+  * `404 Not Found` - `BK_002`: Booking ID không tồn tại.
+  * `403 Forbidden` - `AUTH_003`: Booking này không thuộc về gia sư đang đăng nhập.
+  * `400 Bad Request` - `SYS_002`: Trạng thái gửi lên không hợp lệ (VD: gửi status "ABC").
+
+=== 3.4. Manager Module
+Dành cho nhân viên kiểm duyệt (Yêu cầu Role `MANAGER`).
+
+#### GET /api/manager/tutors
+Lấy danh sách gia sư cần duyệt (`status=PENDING`).
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Token hết hạn.
+  * `403 Forbidden` - `AUTH_003`: Role Tutor/User cố truy cập.
+
+#### PUT /api/manager/tutors/{id}/approve
+Duyệt hồ sơ gia sư.
+* **Possible Errors**:
+  * `401 Unauthorized` - `AUTH_002`: Token hết hạn.
+  * `403 Forbidden` - `AUTH_003`: Không phải Manager.
+  * `404 Not Found` - `TUT_001`: Hồ sơ gia sư không tìm thấy.
+
+#### PUT /api/manager/tutors/{id}/reject
+Từ chối hồ sơ gia sư.
+[source,json]
+----
+{ "reason": "Ảnh mờ" }
+----
+* **Possible Errors**:
+  * `401 / 403` - Như trên.
+  * `404 Not Found` - `TUT_001`: Không tìm thấy gia sư.
+
+=== 3.5. Admin Module
+Quản trị hệ thống (Yêu cầu Role `ADMIN`).
+
+#### PUT /api/admin/users/{id}/ban
+Khóa tài khoản User/Tutor.
+* **Possible Errors**:
+  * `401 / 403` - Như trên.
+  * `404 Not Found` - `USR_002`: User ID không tồn tại.
+  * `400 Bad Request` - Không thể Ban chính mình (Admin).
+
+#### POST /api/admin/subjects
+Thêm môn học mới.
+* **Possible Errors**:
+  * `401 / 403` - Như trên.
+  * `400 Bad Request` - Tên môn học bị trùng (Duplicate).
